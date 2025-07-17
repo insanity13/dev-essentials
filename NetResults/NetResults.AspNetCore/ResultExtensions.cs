@@ -23,9 +23,9 @@ namespace NetResults.AspNetCore
                     title: serverError.Message,
                     type: "https://tools.ietf.org/html/rfc7231#section-6.6.1"),
 
-                ValidationResult<T> validation => Results.BadRequest(CreateProblemDetails(
+                ValidationErrorResult<T> validation => Results.BadRequest(CreateProblemDetails(
                     validation.Message ?? "Validation error",
-                    StatusCodes.Status400BadRequest,
+                    StatusCodes.Status422UnprocessableEntity,
                     "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                     validation.Error.Errors)),
 

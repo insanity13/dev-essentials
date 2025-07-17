@@ -1,6 +1,5 @@
 ﻿namespace Domain.Entities
 {
-    [System.Text.Json.Serialization.JsonSerializable(typeof(Todo))]
     public class Todo
     {
         public int Id { get; set; }

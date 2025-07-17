@@ -1,6 +1,6 @@
 ﻿namespace NetResults.Core
 {
-    public record ValidationResult<T>(ValidationError Error) : Result<T>
+    public record ValidationErrorResult<T>(ValidationError Error) : Result<T>
     {
         public override T? Value => default;
         public override bool IsSuccess => false;

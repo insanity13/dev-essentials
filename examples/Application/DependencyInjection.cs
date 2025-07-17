@@ -1,8 +1,7 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Services;
-using Application.Validation;
 using Microsoft.Extensions.DependencyInjection;
+using NetValidator.Core;
 
 namespace Application
 {
@@ -11,10 +10,8 @@ namespace Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<ITodoService, TodoService>();
-
-            services.AddScoped<IValidator<CreateTodoRequest>, CreateTodoRequestValidator>();
-            services.AddScoped<IValidator<UpdateTodoRequest>, UpdateTodoRequestValidator>();
-
+            services.AddValidators();
+            
             return services;
         }
     }

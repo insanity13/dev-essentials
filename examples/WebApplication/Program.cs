@@ -33,7 +33,6 @@ builder.Services.AddProblemDetails(options =>
 
 var app = builder.Build();
 
-//app.UseHttpsRedirection();
 app.UseTodoEndpoints();
 
 app.Use(async (context, next) => // TODO: Exception Handler.
@@ -53,5 +52,7 @@ app.Use(async (context, next) => // TODO: Exception Handler.
         await result.ToHttpResult().ExecuteAsync(context);
     }
 });
+
+
 
 app.Run();

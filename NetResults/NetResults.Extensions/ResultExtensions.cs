@@ -11,7 +11,7 @@ namespace NetResults.Extensions
             {
                 Success<T> success => success.Value,
                 NotFoundResult<T> notFound => throw new InvalidOperationException($"Not Found: {notFound.Error.Message}"),
-                ValidationResult<T> validation => throw new ValidationException($"Validation Failed: {string.Join(", ", validation.Error.Errors.SelectMany(e => e.Value))}"),
+                ValidationErrorResult<T> validation => throw new ValidationException($"Validation Failed: {string.Join(", ", validation.Error.Errors.SelectMany(e => e.Value))}"),
                 InternalErrorResult<T> serverError => throw new InvalidOperationException($"Server Error: {serverError.Error.Message}", serverError.Error.Exception),
                 UserErrorResult<T> userError => throw new InvalidOperationException($"Business Error: {userError.Error.Message}"),
 
@@ -25,7 +25,7 @@ namespace NetResults.Extensions
             {
                 Success<TIn> success => new Success<TOut>(mapper(success.Value)),
                 NotFoundResult<TIn> notFound => new NotFoundResult<TOut>(notFound.Error),
-                ValidationResult<TIn> validation => new ValidationResult<TOut>(validation.Error),
+                ValidationErrorResult<TIn> validation => new ValidationErrorResult<TOut>(validation.Error),
                 InternalErrorResult<TIn> internalError => new InternalErrorResult<TOut>(internalError.Error),
                 UserErrorResult<TIn> userError => new UserErrorResult<TOut>(userError.Error),
                 _ => throw new NotSupportedException($"Unknown result type: {result.GetType().Name}")
@@ -43,7 +43,7 @@ namespace NetResults.Extensions
 
                 Success<TOut> success => success,
                 NotFoundResult<TOut> notFound => notFound,
-                ValidationResult<TOut> validation => validation,
+                ValidationErrorResult<TOut> validation => validation,
                 InternalErrorResult<TOut> internalError => internalError,
                 UserErrorResult<TOut> userError => userError,
                 _ => throw new NotSupportedException($"Unknown result type: {result.GetType().Name}")

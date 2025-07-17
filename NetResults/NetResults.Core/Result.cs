@@ -6,7 +6,7 @@
 
         public static implicit operator Result<T>(T value) => new Success<T>(value);
         public static implicit operator Result<T>(NotFound error) => new NotFoundResult<T>(error);
-        public static implicit operator Result<T>(ValidationError error) => new ValidationResult<T>(error);
+        public static implicit operator Result<T>(ValidationError error) => new ValidationErrorResult<T>(error);
         public static implicit operator Result<T>(InternalError error) => new InternalErrorResult<T>(error);
         public static implicit operator Result<T>(UserError error) => new UserErrorResult<T>(error);
     }
