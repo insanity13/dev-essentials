@@ -87,6 +87,8 @@ namespace FormattedText.Builder
             return this;
         }
 
+        public FormattedText AsFormattedText() => new([.. _elements]);
+
         public string AsPlainText()
         {
             var sb = new StringBuilder();
