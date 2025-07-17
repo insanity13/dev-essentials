@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\NetResults.AspNetCore\NetResults.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\NetResults\NetResults.AspNetCore\NetResults.AspNetCore.csproj" />
     <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
