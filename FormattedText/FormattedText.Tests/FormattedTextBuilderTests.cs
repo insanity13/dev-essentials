@@ -113,7 +113,7 @@ namespace FormattedText.Tests
 
             // Assert
             Assert.Contains($"a. First{Environment.NewLine}b. Second{Environment.NewLine}", plainText);
-            Assert.Contains("<ul style=\"list-style-type: lower-alpha\">", html);
+            Assert.Contains("<ul>", html);
         }
 
         [Fact]

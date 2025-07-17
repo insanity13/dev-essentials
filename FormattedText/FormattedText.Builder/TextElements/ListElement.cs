@@ -6,7 +6,7 @@ namespace FormattedText.Builder.TextElements
     {
         public bool IsNumbered { get; } = isNumbered;
         public bool IsUppercase { get; } = isUppercase;
-        public List<string> Items { get; } = new List<string>();
+        public List<string> Items { get; } = [];
 
         public void AppendAsPlainText(StringBuilder sb)
         {

@@ -25,7 +25,7 @@ namespace FormattedText.Builder.TextElements
 
         public void AppendAsHtml(StringBuilder sb, string? classPrefix)
         {
-            var classAttr = string.IsNullOrEmpty(classPrefix) ? "" : $" class=\"{classPrefix}-h{_level}\"";
+            var classAttr = string.IsNullOrEmpty(classPrefix) ? "" : $" class=\"{classPrefix}-{_level.ToString().ToLowerInvariant()}\"";
             sb.Append($"<h{(int)_level}{classAttr}>")
               .Append(System.Net.WebUtility.HtmlEncode(_text))
               .Append($"</h{(int)_level}>")
