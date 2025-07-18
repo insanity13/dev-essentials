@@ -8,9 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\NetOptions\NetOptions.Core\NetOptions.Core.csproj" />
+    <ProjectReference Include="..\..\NetOptions\NetOptions.Generators\NetOptions.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
