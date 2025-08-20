@@ -1,9 +1,6 @@
 using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
-using NetResults.AspNetCore;
-using NetResults.Core;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text.Json;
 using WebApplication;
