@@ -3,13 +3,14 @@ using Application.Interfaces;
 using Application.Mapping;
 using Domain.Interfaces;
 using NetResults.Core;
+using NetResults.Core.Errors;
 using NetResults.Extensions;
+using NetValidator.Core;
 
 namespace Application.Services
 {
     internal class TodoService(ITodoRepository repository) : ITodoService
     {
-
         public Result<IEnumerable<TodoResponse>> GetAll()
         {
             var result = repository.GetAll();
@@ -25,18 +26,18 @@ namespace Application.Services
             return itemResult.Map(todo => todo.ToResponse());
         }
 
-        public Result<TodoResponse> Create(CreateTodoRequest request)
+        public Result<TodoResponse> Create([Validate] CreateTodoRequest request)
         {
             var result = repository.Create(request.ToEntity());
             return result.Map(t => t.ToResponse());
         }
 
-        public Result<TodoResponse> Update(int id, UpdateTodoRequest request)
+        public Result<TodoResponse> Update(int id, [Validate] UpdateTodoRequest request)
         {
             var existingResult = repository.GetById(id);
 
             if (existingResult.IsFailed)
-                return existingResult.AsTyped<TodoResponse>();
+                return existingResult.Error!;
 
             request.UpdateEntity(existingResult.Value!);
             return existingResult.Map(t => t.ToResponse());

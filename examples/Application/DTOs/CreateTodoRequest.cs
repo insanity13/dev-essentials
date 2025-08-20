@@ -1,4 +1,6 @@
-﻿namespace Application.DTOs
+﻿using NetValidator.Core;
+
+namespace Application.DTOs
 {
     public record CreateTodoRequest(
         string Title,

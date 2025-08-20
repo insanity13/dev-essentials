@@ -1,19 +1,22 @@
 ﻿using NetResults.Core;
+using NetResults.Core.Errors;
 using System.ComponentModel.DataAnnotations;
 
 namespace NetResults.Extensions
 {
     public static class ResultExtensions
     {
-        public static T GetValueOrThrow<T>(this Result result)
+        public static T GetValueOrThrow<T>(this Result<T> result)
         {
-            return result switch
+            if (result.IsSuccess)
+                return result.Value!;
+
+            return result.Error switch
             {
-                Success<T> success => success.Value,
-                NotFoundResult<T> notFound => throw new InvalidOperationException($"Not Found: {notFound.Error.Message}"),
-                ValidationErrorResult<T> validation => throw new ValidationException($"Validation Failed: {string.Join(", ", validation.Error.Errors.SelectMany(e => e.Value))}"),
-                InternalErrorResult<T> serverError => throw new InvalidOperationException($"Server Error: {serverError.Error.Message}", serverError.Error.Exception),
-                UserErrorResult<T> userError => throw new InvalidOperationException($"Business Error: {userError.Error.Message}"),
+                NotFound notFound => throw new InvalidOperationException($"Not Found: {notFound.ErrorMessage}"),
+                ValidationError validation => throw new ValidationException($"Validation Failed: {string.Join(", ", validation.Errors.SelectMany(e => e.Value))}"),
+                InternalError serverError => throw new InvalidOperationException($"Server Error: {serverError.ErrorMessage}", serverError.Exception),
+                UserError userError => throw new InvalidOperationException($"Business Error: {userError.ErrorMessage}"),
 
                 _ => throw new InvalidOperationException("Unknown Error State")
             };
@@ -21,33 +24,10 @@ namespace NetResults.Extensions
 
         public static Result<TOut> Map<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> mapper)
         {
-            return result switch
-            {
-                Success<TIn> success => new Success<TOut>(mapper(success.Value)),
-                NotFoundResult<TIn> notFound => new NotFoundResult<TOut>(notFound.Error),
-                ValidationErrorResult<TIn> validation => new ValidationErrorResult<TOut>(validation.Error),
-                InternalErrorResult<TIn> internalError => new InternalErrorResult<TOut>(internalError.Error),
-                UserErrorResult<TIn> userError => new UserErrorResult<TOut>(userError.Error),
-                _ => throw new NotSupportedException($"Unknown result type: {result.GetType().Name}")
-            };
-        }
+            if (result.IsSuccess)
+                return mapper(result.Value!);
 
-        public static Result<TOut> AsTyped<TOut>(this Result result)
-        {
-            return result switch
-            {
-                NotFoundResult notFound => notFound.Error,
-                Core.ValidationResult validation => validation.Error,
-                InternalErrorResult internalError => internalError.Error,
-                UserErrorResult userError => userError.Error,
-
-                Success<TOut> success => success,
-                NotFoundResult<TOut> notFound => notFound,
-                ValidationErrorResult<TOut> validation => validation,
-                InternalErrorResult<TOut> internalError => internalError,
-                UserErrorResult<TOut> userError => userError,
-                _ => throw new NotSupportedException($"Unknown result type: {result.GetType().Name}")
-            };
+            return result.Error!;
         }
     }
 }

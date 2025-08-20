@@ -35,24 +35,22 @@ var app = builder.Build();
 
 app.UseTodoEndpoints();
 
-app.Use(async (context, next) => // TODO: Exception Handler.
-{
-    try
-    {
-        await next(context);
-    }
-    catch (Exception ex)
-    {
-        Result result = ex switch
-        {
-            ValidationException => new UserErrorResult(new UserError(ex.Message)),
-            _ => new InternalErrorResult(new InternalError("An unexpected error occurred", ex))
-        };
+//app.Use(async (context, next) => // TODO: Exception Handler.
+//{
+//    try
+//    {
+//        await next(context);
+//    }
+//    catch (Exception ex)
+//    {
+//        Result result = ex switch
+//        {
+//            ValidationException => new UserErrorResult(new UserError(ex.Message)),
+//            _ => new InternalErrorResult(new InternalError("An unexpected error occurred", ex))
+//        };
 
-        await result.ToHttpResult().ExecuteAsync(context);
-    }
-});
-
-
+//        await result.ToHttpResult().ExecuteAsync(context);
+//    }
+//});
 
 app.Run();

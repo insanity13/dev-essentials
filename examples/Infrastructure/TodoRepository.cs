@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using NetResults.Core;
+using NetResults.Core.Errors;
 
 namespace Infrastructure
 {

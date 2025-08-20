@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NetResults.Core;
+using NetResults.Core.Errors;
 
 namespace NetResults.AspNetCore
 {
@@ -8,68 +9,49 @@ namespace NetResults.AspNetCore
     {
         public static IResult ToHttpResult<T>(this Result<T> result)
         {
-            return result switch
-            {
-                Success<T> success => Results.Ok(success.Value),
+            if (result.IsSuccess)
+                return Results.Ok(result.Value);
 
-                NotFoundResult<T> notFound => Results.NotFound(CreateProblemDetails(
-                    notFound.Error.Message,
-                    StatusCodes.Status404NotFound,
-                    "https://tools.ietf.org/html/rfc7231#section-6.5.4")),
-
-                InternalErrorResult<T> serverError => Results.Problem(
-                    detail: serverError.Error.Message,
-                    statusCode: StatusCodes.Status500InternalServerError,
-                    title: serverError.Message,
-                    type: "https://tools.ietf.org/html/rfc7231#section-6.6.1"),
-
-                ValidationErrorResult<T> validation => Results.BadRequest(CreateProblemDetails(
-                    validation.Message ?? "Validation error",
-                    StatusCodes.Status422UnprocessableEntity,
-                    "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                    validation.Error.Errors)),
-
-                UserErrorResult<T> userError => Results.Problem(
-                    detail: userError.Error.Message,
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Bad request",
-                    type: "https://tools.ietf.org/html/rfc7231#section-6.5.1"),
-                _ => throw new NotSupportedException("Unknown result type")
-            };
+            return ConvertError(result.Error!);
         }
 
         public static IResult ToHttpResult(this Result result)
         {
-            return result switch
-            {
-                Success success => Results.Ok(),
+            if (result.IsSuccess)
+                return Results.Ok();
 
-                Core.NotFoundResult notFound => Results.NotFound(CreateProblemDetails(
-                    notFound.Error.Message,
+            return ConvertError(result.Error!);
+        }
+
+        private static IResult ConvertError(ErrorBase error)
+        {
+            return error switch
+            {
+                NotFound notFound => Results.NotFound(CreateProblemDetails(
+                    notFound.ErrorMessage,
                     StatusCodes.Status404NotFound,
                     "https://tools.ietf.org/html/rfc7231#section-6.5.4")),
 
-                InternalErrorResult serverError => Results.Problem(
-                    detail: serverError.Error.Message,
+                InternalError serverError => Results.Problem(
+                    detail: serverError.ErrorMessage,
                     statusCode: StatusCodes.Status500InternalServerError,
-                    title: serverError.Message,
+                    title: serverError.ErrorMessage,
                     type: "https://tools.ietf.org/html/rfc7231#section-6.6.1"),
 
-                Core.ValidationResult validation => Results.BadRequest(CreateProblemDetails(
-                    validation.Message ?? "Validation error",
-                    StatusCodes.Status400BadRequest,
+                ValidationError validationError => Results.BadRequest(CreateProblemDetails(
+                    "Validation error",
+                    StatusCodes.Status422UnprocessableEntity,
                     "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                    validation.Error.Errors)),
+                    validationError.Errors)),
 
-                UserErrorResult userError => Results.Problem(
-                    detail: userError.Error.Message,
+                UserError userError => Results.Problem(
+                    detail: userError.ErrorMessage,
                     statusCode: StatusCodes.Status400BadRequest,
                     title: "Bad request",
                     type: "https://tools.ietf.org/html/rfc7231#section-6.5.1"),
                 _ => throw new NotSupportedException("Unknown result type")
             };
         }
-
 
         private static ProblemDetails CreateProblemDetails(
             string title,
